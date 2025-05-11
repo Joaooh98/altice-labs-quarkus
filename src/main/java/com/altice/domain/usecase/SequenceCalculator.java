@@ -15,6 +15,10 @@ public class SequenceCalculator {
         if (n < 0) {
             throw new IllegalArgumentException("Sequence index (must be non-negative): " + n);
         }
+
+        if (n > 1000000) {
+            throw new IllegalArgumentException("Sequence index (must be less than or equal to 1000000)");
+        }
         
         if (n == 0) return L_0;
         if (n == 1) return L_1;
