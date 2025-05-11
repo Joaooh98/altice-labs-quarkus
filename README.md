@@ -1,67 +1,101 @@
-# altice-labs-quarkus
+markdown# Labseq API
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A high-performance API for calculating the labseq mathematical sequence.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Sequence Definition
 
-## Running the application in dev mode
+The labseq sequence is defined as follows:
+n=0 => l(0) = 0
+n=1 => l(1) = 1
+n=2 => l(2) = 0
+n=3 => l(3) = 1
+n>3 => l(n) = l(n-4) + l(n-3)
 
-You can run your application in dev mode that enables live coding using:
+## Architecture
 
-```shell script
+This application implements a clean architecture approach:
+
+- **Domain Layer**: Core business logic and entities
+  - `SequenceValue`: Represents a calculated sequence value
+  - `SequenceCalculator`: Implements the sequence algorithm
+
+- **Service Layer**: Orchestration and caching
+  - `SequenceService`: Manages calculation and performance monitoring
+
+- **Presentation Layer**: API endpoints
+  - `SequenceResource`: REST controller for sequence calculation
+
+- **Infrastructure Layer**: Configuration and utilities
+  - `OpenApiConfig`: API documentation setup
+  - `ResponseUtils`: JSON serialization customization
+
+## Technologies
+
+- **Quarkus**: Supersonic Subatomic Java framework
+- **Java 21**: Latest language features
+- **RESTEasy**: JAX-RS implementation
+- **Jackson**: JSON processing
+- **Caffeine**: High-performance caching
+- **SmallRye OpenAPI**: API documentation
+- **GraalVM**: Native compilation
+- **JUnit 5 & RestAssured**: Testing
+
+## Running the Application
+
+### Development Mode
+
+```shell
 ./mvnw quarkus:dev
-```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
+Development UI: http://localhost:8081/q/dev/
+JVM Mode
+shell./mvnw package
+java -jar target/quarkus-app/quarkus-run.jar
+Native Mode
+shell# Build native executable
 ./mvnw package -Dnative
-```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+# Run the native executable
+./target/altice-labs-quarkus-1.0.0-SNAPSHOT-runner
+Docker
+shell# JVM mode
+./mvnw package
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/altice-labs-quarkus-jvm .
+docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus-jvm
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+# Native mode
+./mvnw package -Dnative
+docker build -f src/main/docker/Dockerfile.native -t quarkus/altice-labs-quarkus .
+docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus
+API Documentation
+OpenAPI/Swagger UI: http://localhost:8081/q/swagger-ui/
+Endpoints
 
-You can then execute your native executable with: `./target/altice-labs-quarkus-1.0.0-SNAPSHOT-runner`
+GET /labseq/{n} - Calculate sequence value at index n
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+Example response:
+```{
+  "index": 10,
+  "value": "3",
+  "calculationTimeMs": 5
+}```
 
-## Related Guides
+Technical Details
+Performance Optimizations
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- Cache ([guide](https://quarkus.io/guides/cache)): Enable application data caching in CDI beans
+Algorithm Efficiency: Uses sliding window technique instead of recursion
+Caching: Implements Caffeine cache to store calculated values
+BigInteger Support: Handles arbitrarily large sequence values
+Native Compilation: GraalVM compilation for reduced startup time and memory usage
 
-## Provided Code
+Configuration
+The application uses the following configurations:
 
-### REST
+HTTP Port: 8081
+Cache Maximum Size: 1000 entries
+Cache Expiration: 1 hour
 
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Testing
+Run tests with:
+shell./mvnw test
+License
+Apache License 2.0
