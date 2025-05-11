@@ -22,7 +22,7 @@ public class SequenceService {
         long calculationTime = System.currentTimeMillis() - startTime;
         return SequenceValue.builder()
                 .index(n)
-                .value(result)
+                .value(result.toString())
                 .calculationTimeMs(calculationTime)
                 .build();
     }

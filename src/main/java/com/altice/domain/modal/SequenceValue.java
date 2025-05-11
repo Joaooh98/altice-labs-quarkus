@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public class SequenceValue {
     private final int index;
-    private final BigInteger value;
+    private final String value;
     private final long calculationTimeMs;
 
     private SequenceValue(Builder builder) {
@@ -17,7 +17,7 @@ public class SequenceValue {
         return index;
     }
 
-    public BigInteger getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -31,7 +31,7 @@ public class SequenceValue {
     
     public static class Builder {
         private int index;
-        private BigInteger value;
+        private String value;
         private long calculationTimeMs;
         
         private Builder() {}
@@ -41,7 +41,7 @@ public class SequenceValue {
             return this;
         }
         
-        public Builder value(BigInteger value) {
+        public Builder value(String value) {
             this.value = value;
             return this;
         }
