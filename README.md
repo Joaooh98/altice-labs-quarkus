@@ -46,26 +46,40 @@ This application implements a clean architecture approach:
 
 ```shell
 ./mvnw quarkus:dev
+```
 Development UI: http://localhost:8081/q/dev/
-JVM Mode
-shell./mvnw package
+
+### JVM Mode
+```shell
+./mvnw package
+
 java -jar target/quarkus-app/quarkus-run.jar
-Native Mode
-shell# Build native executable
+```
+
+### Native Mode
+ Build native executable
+
+```shell
 ./mvnw package -Dnative
+```
 
 # Run the native executable
 ./target/altice-labs-quarkus-1.0.0-SNAPSHOT-runner
 Docker
-shell# JVM mode
+## JVM mode
+```shell
 ./mvnw package
 docker build -f src/main/docker/Dockerfile.jvm -t quarkus/altice-labs-quarkus-jvm .
 docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus-jvm
+```
 
-# Native mode
+## Native mode
+```shell
 ./mvnw package -Dnative
 docker build -f src/main/docker/Dockerfile.native -t quarkus/altice-labs-quarkus .
 docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus
+```
+
 API Documentation
 OpenAPI/Swagger UI: http://localhost:8081/q/swagger-ui/
 Endpoints
@@ -73,21 +87,27 @@ Endpoints
 GET /labseq/{n} - Calculate sequence value at index n
 
 Example response:
-```{
+```json
+{
   "index": 10,
-  "value": "3",
+  "value": 3,
   "calculationTimeMs": 5
-}```
+}
+```
 
 Technical Details
 Performance Optimizations
 
 Algorithm Efficiency: Uses sliding window technique instead of recursion
+
 Caching: Implements Caffeine cache to store calculated values
+
 BigInteger Support: Handles arbitrarily large sequence values
+
 Native Compilation: GraalVM compilation for reduced startup time and memory usage
 
 Configuration
+
 The application uses the following configurations:
 
 HTTP Port: 8081
