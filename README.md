@@ -1,92 +1,115 @@
-markdown# Labseq API
+# Labseq API
 
-A high-performance API for calculating the labseq mathematical sequence.
+Uma API de alto desempenho para cálculo da sequência matemática labseq.
 
-## Sequence Definition
+## Definição da Sequência
 
-The labseq sequence is defined as follows:
-n=0 => l(0) = 0
-n=1 => l(1) = 1
-n=2 => l(2) = 0
-n=3 => l(3) = 1
-n>3 => l(n) = l(n-4) + l(n-3)
+A sequência labseq é definida como:
+- n=0 => l(0) = 0
+- n=1 => l(1) = 1
+- n=2 => l(2) = 0
+- n=3 => l(3) = 1
+- n>3 => l(n) = l(n-4) + l(n-3)
 
-## Architecture
+## Arquitetura
 
-This application implements a clean architecture approach:
+Esta aplicação implementa uma abordagem de arquitetura limpa:
 
-- **Domain Layer**: Core business logic and entities
-  - `SequenceValue`: Represents a calculated sequence value
-  - `SequenceCalculator`: Implements the sequence algorithm
+- **Camada de Domínio**: Lógica de negócio central e entidades
+  - `SequenceValue`: Representa um valor calculado da sequência
+  - `SequenceCalculator`: Implementa o algoritmo da sequência
 
-- **Service Layer**: Orchestration and caching
-  - `SequenceService`: Manages calculation and performance monitoring
+- **Camada de Serviço**: Orquestração e cache
+  - `SequenceService`: Gerencia o cálculo e o monitoramento de desempenho
 
-- **Presentation Layer**: API endpoints
-  - `SequenceResource`: REST controller for sequence calculation
+- **Camada de Apresentação**: Endpoints da API
+  - `SequenceResource`: Controlador REST para cálculo da sequência
 
-- **Infrastructure Layer**: Configuration and utilities
-  - `OpenApiConfig`: API documentation setup
-  - `ResponseUtils`: JSON serialization customization
+- **Camada de Infraestrutura**: Configuração e utilitários
+  - `OpenApiConfig`: Configuração da documentação da API
+  - `ResponseUtils`: Personalização da serialização JSON
 
-## Technologies
+## Tecnologias
 
-- **Quarkus**: Supersonic Subatomic Java framework
-- **Java 21**: Latest language features
-- **RESTEasy**: JAX-RS implementation
-- **Jackson**: JSON processing
-- **Caffeine**: High-performance caching
-- **SmallRye OpenAPI**: API documentation
-- **GraalVM**: Native compilation
-- **JUnit 5 & RestAssured**: Testing
+- **Quarkus**: Framework Java Supersônico Subatômico
+- **Java 21**: Recursos mais recentes da linguagem
+- **RESTEasy**: Implementação JAX-RS
+- **Jackson**: Processamento JSON
+- **Caffeine**: Cache de alto desempenho
+- **SmallRye OpenAPI**: Documentação da API
+- **GraalVM**: Compilação nativa
+- **JUnit 5 & RestAssured**: Testes
 
-## Running the Application
+## Requisitos do Projeto
 
-### Development Mode
+1. **Java 21** (definido no pom.xml)
+2. **Maven** (incluído via Maven Wrapper)
+3. **Docker** (opcional, para execução em contêineres)
+
+## Executando a Aplicação
+
+### Modo Desenvolvimento
 
 ```shell
 ./mvnw quarkus:dev
 ```
-Development UI: http://localhost:8081/q/dev/
+Interface de desenvolvimento: http://localhost:8081/q/dev/
 
-### JVM Mode
+### Modo JVM
 ```shell
 ./mvnw package
 
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-### Native Mode
- Build native executable
-
+### Modo Nativo
 ```shell
+# Compilação do executável nativo
 ./mvnw package -Dnative
+
+# Executar o arquivo nativo
+./target/altice-labs-quarkus-1.0.0-SNAPSHOT-runner
 ```
 
-# Run the native executable
-./target/altice-labs-quarkus-1.0.0-SNAPSHOT-runner
-Docker
-## JVM mode
+### Docker
+
+#### Modo JVM
 ```shell
 ./mvnw package
 docker build -f src/main/docker/Dockerfile.jvm -t quarkus/altice-labs-quarkus-jvm .
 docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus-jvm
 ```
 
-## Native mode
+#### Modo Nativo
 ```shell
 ./mvnw package -Dnative
 docker build -f src/main/docker/Dockerfile.native -t quarkus/altice-labs-quarkus .
 docker run -i --rm -p 8081:8081 quarkus/altice-labs-quarkus
 ```
 
-API Documentation
-OpenAPI/Swagger UI: http://localhost:8081/q/swagger-ui/
-Endpoints
+### Utilizando os Scripts
 
-GET /labseq/{n} - Calculate sequence value at index n
+1. **Modo JVM** (mais rápido para compilar, adequado para desenvolvimento):
+   ```bash
+   chmod +x build-and-run-jvm.sh  # Tornar o script executável
+   ./build-and-run-jvm.sh
+   ```
 
-Example response:
+2. **Modo Nativo** (otimizado para produção, compilação mais demorada):
+   ```bash
+   chmod +x build-and-run-native.sh  # Tornar o script executável,
+   ./build-and-run-native.sh
+   ```
+
+## Documentação da API
+
+- **OpenAPI/Swagger UI**: http://localhost:8081/q/swagger-ui/
+
+## Endpoints
+
+- **GET /labseq/{n}** - Calcula o valor da sequência no índice n
+
+Exemplo de resposta:
 ```json
 {
   "index": 10,
@@ -95,27 +118,30 @@ Example response:
 }
 ```
 
-Technical Details
-Performance Optimizations
+## Detalhes Técnicos
 
-Algorithm Efficiency: Uses sliding window technique instead of recursion
+### Otimizações de Performance
 
-Caching: Implements Caffeine cache to store calculated values
+- **Eficiência do Algoritmo**: Usa técnica de janela deslizante em vez de recursão
+- **Cache**: Implementa cache Caffeine para armazenar valores calculados
+- **Suporte a BigInteger**: Manipula valores de sequência arbitrariamente grandes
+- **Compilação Nativa**: Compilação GraalVM para redução do tempo de inicialização e uso de memória
 
-BigInteger Support: Handles arbitrarily large sequence values
+### Configuração
 
-Native Compilation: GraalVM compilation for reduced startup time and memory usage
+A aplicação usa as seguintes configurações:
 
-Configuration
+- **Porta HTTP**: 8081
+- **Tamanho Máximo do Cache**: 1000 entradas
+- **Expiração do Cache**: 1 hora
 
-The application uses the following configurations:
+## Testes
 
-HTTP Port: 8081
-Cache Maximum Size: 1000 entries
-Cache Expiration: 1 hour
+Execute os testes com:
+```shell
+./mvnw test
+```
 
-Testing
-Run tests with:
-shell./mvnw test
-License
+## Licença
+
 Apache License 2.0
