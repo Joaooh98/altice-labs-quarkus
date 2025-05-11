@@ -15,7 +15,7 @@ public class SequenceResourceTest {
           .when().get("/labseq/5")
           .then()
              .statusCode(200)
-             .body("value", is(1)); 
+             .body("value", is("1")); 
     }
     
     @Test
