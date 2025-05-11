@@ -1,7 +1,5 @@
 package com.altice.domain.modal;
 
-import java.math.BigInteger;
-
 public class SequenceValue {
     private final int index;
     private final String value;
