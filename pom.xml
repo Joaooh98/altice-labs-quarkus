@@ -15,6 +15,7 @@
         <quarkus.platform.version>3.22.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
+        <!-- Configurações para build nativo -->
     </properties>
 
     <dependencyManagement>
@@ -126,6 +127,7 @@
             <properties>
                 <skipITs>false</skipITs>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
+                <quarkus.container-image.build>true</quarkus.container-image.build>
             </properties>
         </profile>
     </profiles>
